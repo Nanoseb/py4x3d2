@@ -7,6 +7,8 @@ import stl
 import stltovoxel as stv
 import numpy as np
 
+from . import voxel
+
 def convert(stl_file):
     """ Converts an stl file into a Numpy array.
     """
@@ -44,6 +46,10 @@ def convert(stl_file):
         )
     )
 
+    # Returns:
+    # - vol:   The voxel grid
+    # - scale: The number of voxels per unit length
+    # - shift: The distance from the origin to the mesh centre
     vol, scale, shift = stv.convert_meshes([org_mesh], 100, None, False)
 
-    return vol
+    return voxel.Voxels(vol, scale, shift)
