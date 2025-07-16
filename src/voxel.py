@@ -17,7 +17,8 @@ class Voxels:
     def _xyz(self, xyz):
         """Get the relative spatial coordinate.
 
-        Note this assumes that the coordinate ordering matches the stl-to-voxel layout [z,y,x].
+        Note that shift is stored as [sx, sy, sz], therefore you should pass [x,y,z] despite the
+        voxels being stored in [z,y,x] order.
         """
         
         return xyz - self.shift
@@ -25,11 +26,12 @@ class Voxels:
     def _ijk(self, xyz):
         """Converts a spatial [x,y,z] coordinate into voxel indices."""
 
-        xyz_rel = self._xyz(np.flip(xyz)) # Flip coordinates as stl-to-voxel stores [z,y,x] data
+        xyz_rel = self._xyz(xyz)
 
         # XXX: np.floor(x) rounds DOWN, not towards zero - this is the behaviour that we want as it
         #      prevents points that are -ve in relative space from being rounded into the object.
-        ijk = np.floor(xyz_rel * self.scale).astype(int)
+        # XXX: The relative coordinates are flipped as stl voxels are stored in [zyx] order.
+        ijk = np.floor(np.flip(xyz_rel) * self.scale).astype(int)
 
         return ijk
         
@@ -37,7 +39,7 @@ class Voxels:
         """Obtains the voxel value at coordinates [xyz]."""
 
         def fix_boundary_intersection(xyz, ijk):
-            xyz_rel = self._xyz(np.flip(xyz)) # Flip coordinates as stl-to-voxel stores [z,y,x] data
+            xyz_rel = np.flip(self._xyz(xyz)) # Flip coordinates as stl-to-voxel stores [z,y,x] data
             if np.any(xyz_rel == self.L):
                 for i in range(3):
                     if (xyz_rel[i] == self.L[i]):
@@ -54,4 +56,9 @@ class Voxels:
         else:
             return self.vol[ijk[0], ijk[1], ijk[2]]
 
+    def bounding_box(self):
+
+        x0 = self.shift
+        xn = x0 + np.flip(self.L)
+        return [x0, xn]
         

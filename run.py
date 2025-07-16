@@ -18,15 +18,21 @@ def run(stl_file):
     print(f"Model scale: {voxels.scale}")
     print(f"Voxel size: {1 / voxels.scale}")
     print(f"Voxel count: {voxels.n}")
-    print(f"Bounding box: {voxels.shift} : {voxels.shift + voxels.L}")
+    print(f"Bounding box: {voxels.bounding_box()}")
     
     # Embed voxels into an IBM field
-    mesh_n = [50, 100, 200]
+    mesh_n = [350, 950, 215]
     # mesh_l = [39.6, 92.4, 236]
-    mesh_l = [40, 80, 160]
-    shift = [0, 10, 0]
+    # mesh_l = [72, 160, 32]
+    mesh_l = [60, 162, 37]
+    shift = [0, 0, 0]
     ibm = embed_stl.embed(voxels, mesh_n, mesh_l, shift)
 
+    shift = [13.244, -29.2215, 0]
+    ibm2 = embed_stl.embed(voxels, mesh_n, mesh_l, shift)
+
+    ibm = ibm2 * ibm
+    
     # Write voxel array using ADIOS2
     nx = ibm.shape[0]
     ny = ibm.shape[1]
@@ -42,4 +48,5 @@ def run(stl_file):
 
 
 if __name__ == "__main__":
-    run("/Users/paulbartholomew/DATA/mesh/stl/test_single_foil.stl")
+    #run("/Users/paulbartholomew/DATA/mesh/stl/test_single_foil.stl")
+    run("/Users/paulbartholomew/DATA/mesh/stl/centered_wing.stl")

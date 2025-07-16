@@ -50,6 +50,6 @@ def convert(stl_file):
     # - vol:   The voxel grid
     # - scale: The number of voxels per unit length
     # - shift: The distance from the origin to the mesh centre
-    vol, scale, shift = stv.convert_meshes([org_mesh], 100, None, False)
+    vol, scale, shift = stv.convert_meshes([org_mesh], 350, None, False)
 
     return voxel.Voxels(vol, scale, shift)
