@@ -1,4 +1,3 @@
-from mpi4py import MPI
 import numpy as np
 import adios2
 
@@ -7,10 +6,6 @@ import src.embed_stl as embed_stl
 
 def run(stl_file):
 
-    comm = MPI.COMM_WORLD
-    rank = comm.Get_rank()
-    size = comm.Get_size()
-        
     # Convert STL to voxel array
     voxels = convert_stl.convert(stl_file)
 
@@ -21,10 +16,12 @@ def run(stl_file):
     print(f"Bounding box: {voxels.bounding_box()}")
     
     # Embed voxels into an IBM field
-    mesh_n = [350, 950, 215]
+    # mesh_n = [350, 950, 215]
+    mesh_n = [697, 1878, 429]
     # mesh_l = [39.6, 92.4, 236]
     # mesh_l = [72, 160, 32]
-    mesh_l = [60, 162, 37]
+    # mesh_l = [60, 162, 37]
+    mesh_l = [60.11421911, 161.97202797,  37. ]
     shift = [0, 0, 0]
     ibm = embed_stl.embed(voxels, mesh_n, mesh_l, shift)
 
@@ -42,11 +39,12 @@ def run(stl_file):
     start = [0, 0, 0]
     count = [nx, ny, nz]
 
-    with adios2.open("test.bp", "w", comm) as fh:
+    with adios2.Stream("ibm.bp", "w") as fh:
+        fh.write("iibm", 1)
         for _ in range(0, 1):
-            fh.write("vol", ibm, shape, start, count)
+            fh.write("ep1", ibm, shape, start, count)
 
 
 if __name__ == "__main__":
     #run("/Users/paulbartholomew/DATA/mesh/stl/test_single_foil.stl")
-    run("/Users/paulbartholomew/DATA/mesh/stl/centered_wing.stl")
+    run("front_foil.stl")
