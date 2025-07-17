@@ -38,6 +38,7 @@ def run(stl_file):
     count = [nx, ny, nz]
 
     with adios2.open("test.bp", "w") as fh:
+        fh.write("iibm", np.array([1]))
         fh.write("ep1", np.ascontiguousarray(ibm), shape, start, count)
 
 
