@@ -38,8 +38,7 @@ def run(stl_file):
     count = [nx, ny, nz]
 
     with adios2.open("test.bp", "w") as fh:
-        for _ in range(0, 1):
-            fh.write("vol", ibm, shape, start, count)
+        fh.write("ep1", np.ascontiguousarray(ibm), shape, start, count)
 
 
 if __name__ == "__main__":
