@@ -19,7 +19,8 @@ def embed(voxels, mesh_n, mesh_l, shift=[0, 0, 0]):
     n0, nn = _bounds(voxels, mesh_n, [dx, dy, dz], shift)
     print(f"Working range {n0} : {nn}")
     
-    ibm = np.ones([nz, ny, nx])
+    #ibm = np.ones([nz, ny, nx])
+    ibm = np.ones([nz, ny, nx], dtype=np.double)
     nxyz = np.prod(nn - n0)
     ctr = 0
     workfrac = 0

@@ -27,6 +27,9 @@ def run(stl_file):
     # Embed voxels into an IBM field
     # mesh_n = [350, 950, 215]
     mesh_n = [697, 1878, 429]
+    ratio = 1
+    mesh_n = [697/ratio, 1878/ratio, 429/ratio]
+    mesh_n = [ int(a) for a in mesh_n ]
     # mesh_l = [39.6, 92.4, 236]
     # mesh_l = [72, 160, 32]
     # mesh_l = [60, 162, 37]
@@ -53,7 +56,7 @@ def run(stl_file):
             fh.write("iibm", np.array([1]))
             fh.write("ep1", np.ascontiguousarray(ibm), shape, start, count)
     else:
-        with Stream("ibm.bp4", "w") as s:
+        with Stream("ibm.bp", "w") as s:
             # Basic IBM
             s.write("iibm", 1)
             s.write("ep1", np.ascontiguousarray(ibm), shape, start, count, operations=None)
