@@ -1,4 +1,3 @@
-from mpi4py import MPI
 import numpy as np
 import adios2
 
@@ -6,10 +5,6 @@ import src.convert_stl as convert_stl
 import src.embed_stl as embed_stl
 
 def run(stl_file):
-
-    comm = MPI.COMM_WORLD
-    rank = comm.Get_rank()
-    size = comm.Get_size()
         
     # Convert STL to voxel array
     voxels = convert_stl.convert(stl_file)
@@ -42,7 +37,7 @@ def run(stl_file):
     start = [0, 0, 0]
     count = [nx, ny, nz]
 
-    with adios2.open("test.bp", "w", comm) as fh:
+    with adios2.open("test.bp", "w") as fh:
         for _ in range(0, 1):
             fh.write("vol", ibm, shape, start, count)
 
