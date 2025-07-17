@@ -5,7 +5,6 @@ import src.convert_stl as convert_stl
 import src.embed_stl as embed_stl
 
 def run(stl_file):
-
     # Convert STL to voxel array
     voxels = convert_stl.convert(stl_file)
 
@@ -39,10 +38,17 @@ def run(stl_file):
     start = [0, 0, 0]
     count = [nx, ny, nz]
 
-    with adios2.Stream("ibm.bp", "w") as fh:
-        fh.write("iibm", 1)
-        for _ in range(0, 1):
-            fh.write("ep1", ibm, shape, start, count)
+    # For ADIOS2.7
+    with adios2.open("test.bp", "w") as fh:
+        fh.write("iibm", np.array([1]))
+        fh.write("ep1", np.ascontiguousarray(ibm), shape, start, count)
+
+    # # For ADIOS2.10
+    # with Stream("ibm.bp", "w") as s:
+    #     # Basic IBM
+    #     s.write("iibm", 1)
+    #     s.write("ep1", np.ascontiguousarray(ibm), shape, start, count, operations=None)
+
 
 
 if __name__ == "__main__":
