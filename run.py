@@ -1,5 +1,15 @@
 import numpy as np
 import adios2
+if hasattr(adios2, "__version__"):
+    adios2_minor = int(adios2.__version__.split('.')[1])
+    if adios2_minor >= 10:
+        from adios2 import Stream
+        adios2_new_api = True
+    else:
+        adios2_new_api = False
+else:
+    # Assume old API
+    adios2_new_api = False
 
 import src.convert_stl as convert_stl
 import src.embed_stl as embed_stl
@@ -38,16 +48,15 @@ def run(stl_file):
     start = [0, 0, 0]
     count = [nx, ny, nz]
 
-    # For ADIOS2.7
-    with adios2.open("test.bp", "w") as fh:
-        fh.write("iibm", np.array([1]))
-        fh.write("ep1", np.ascontiguousarray(ibm), shape, start, count)
-
-    # # For ADIOS2.10
-    # with Stream("ibm.bp", "w") as s:
-    #     # Basic IBM
-    #     s.write("iibm", 1)
-    #     s.write("ep1", np.ascontiguousarray(ibm), shape, start, count, operations=None)
+    if not adios2_new_api:
+        with adios2.open("test.bp4", "w") as fh:
+            fh.write("iibm", np.array([1]))
+            fh.write("ep1", np.ascontiguousarray(ibm), shape, start, count)
+    else:
+        with Stream("ibm.bp4", "w") as s:
+            # Basic IBM
+            s.write("iibm", 1)
+            s.write("ep1", np.ascontiguousarray(ibm), shape, start, count, operations=None)
 
 
 
