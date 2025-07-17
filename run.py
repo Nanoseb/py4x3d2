@@ -37,9 +37,16 @@ def run(stl_file):
     start = [0, 0, 0]
     count = [nx, ny, nz]
 
+    # For ADIOS2.7
     with adios2.open("test.bp", "w") as fh:
         fh.write("iibm", np.array([1]))
         fh.write("ep1", np.ascontiguousarray(ibm), shape, start, count)
+
+    # # For ADIOS2.10
+    # with Stream("ibm.bp", "w") as s:
+    #     # Basic IBM
+    #     s.write("iibm", 1)
+    #     s.write("ep1", np.ascontiguousarray(ibm), shape, start, count, operations=None)
 
 
 if __name__ == "__main__":
